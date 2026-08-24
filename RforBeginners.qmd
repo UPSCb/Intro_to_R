@@ -1,0 +1,1024 @@
+---
+title: "Intro to R"
+author: "Edoardo Piombo and Theerarat Kochakarn"
+date: "`r Sys.Date()`"
+format: revealjs
+embed-resources: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction
+
+## Schedule
+
+- What is R?
+- Basics of Rstudio (and quarto)
+- Learning about classes and data structures
+- Loading packages in R
+- Work with dataframes with the tidyverse package
+- Make and export simple plots
+- simple statistical tests
+- PCA
+- snippets of shiny
+
+## Get this presentation
+
+You can download all the code of today here:
+
+https://github.com/UPSCb/Intro_to_R
+
+## What is R?
+
+R is a programming language, used mostly for statistics.
+
+In R, you will use **commands** to manipulate **objects**
+
+Each **object** has a **class**, which defines what it is, and what you can do with it.
+
+**Objects** can be grouped in **data structures**
+
+## Numeric class
+
+Numbers are the most simple class.
+
+They can be written as they are and can be used in mathematical operations
+
+```{r, eval=TRUE, echo=TRUE}
+3+2*3
+```
+
+## Character class
+
+Characters can be letters, numbers or symbols.
+
+They are not numbers so they cannot be used in mathematical operations.
+
+```{r, eval=FALSE, echo=TRUE}
+"c"+"a"
+```
+
+Error in `"c" + "a"`: ! non-numeric argument to binary operator
+
+They must be enclosed in headers
+
+```{r, eval=FALSE, echo=TRUE}
+a
+```
+
+Error: object 'a' not found
+
+## Variables 1
+
+R objects can be assigned variable names, so that you can recall them.
+
+```{r, eval=TRUE, echo=TRUE}
+a <- 3+2*3
+b <- 'A cute dog'
+```
+
+## Variables 2
+
+R objects can be assigned variable names, so that you can recall them.
+
+```{r, eval=TRUE, echo=TRUE}
+a <- 3+2*3
+b <- 'A cute dog'
+```
+
+```{r, eval=TRUE, echo=TRUE}
+b
+a
+```
+
+## Data structure: vectors
+
+This data structure stores one or more values of the same kind
+
+```{r, eval=TRUE, echo = TRUE}
+name_vector <- c('Fred','Betty','Brigitta', 'Ulf')
+numeric_vector <- c(5, 9, 10)
+```
+
+```{r, eval=TRUE, echo = TRUE}
+name_vector
+numeric_vector
+```
+
+## Data structure: vectors 2
+
+This data structure stores one or more values of the same kind
+
+```{r, eval=TRUE, echo = TRUE}
+mixed_vector <- c('Fred','Betty','Brigitta', 5)
+```
+
+```{r, eval=TRUE, echo = TRUE}
+mixed_vector
+mixed_vector[2]
+```
+
+## Data structure: matrices
+
+Matrices are nothing more than 2-dimensional vectors. To define a matrix, use the function **matrix**:
+
+```{r, eval=TRUE, echo = TRUE}
+mat=matrix(data=c(9,2,3,4,5,6),ncol=3)
+mat
+```
+
+## Data structure: matrices 2
+
+You can select single values using square brackets
+
+```{r, eval=TRUE, echo = TRUE}
+mat
+mat[1,2]
+mat[2,]
+```
+
+## Data structure: Data frames
+
+A **data.frame** is a matrix with names on columns (and sometimes rows)
+
+```{r, eval=TRUE, echo = TRUE}
+t = data.frame(x = c(11,12,14),
+  y = c(19,20,21), z = c(10,9,7))
+t
+t[1,2]
+```
+
+## Data structure: Data frames 2
+
+You can use column names to select specific values
+
+```{r, eval=TRUE, echo = TRUE}
+t
+t$x
+t$x[2]
+
+```
+
+## Data structure: Data frames 3
+
+You can use double squares to use variable names
+
+```{r, eval=TRUE, echo = TRUE}
+t
+t[["x"]]
+a <- "x"
+t[[a]]
+
+```
+
+## Data structure: lists
+
+A list is basically a collection of vectors.
+
+Lists are useful when you would want to use a dataframe but the "columns" would have different length.
+
+```{r, eval=TRUE, echo = TRUE}
+L = list(one=1, two=c("dog","cat"))
+
+L
+```
+
+## Data structure: lists 2
+
+Each element of a list has a name, which can be used to extract that element
+
+```{r, eval=TRUE, echo = TRUE}
+names(L)
+
+L$two
+
+L[["two"]]
+```
+
+## Functions
+
+In R you do everything with functions
+
+The basic syntax of functions is:
+
+command(object, option=OptionValue)
+
+For example, to see the first 2 elements of a list you do this:
+
+```{r, eval=TRUE, echo = TRUE}
+penguins_vector <- c('Fred','Betty','Brigitta', 'Ulf')
+head(penguins_vector, n=2)
+```
+
+## Getting the manual
+
+If you do not know which arguments are required by a function, or what does it do exactly, you can find a manual page by putting "?" in front of it
+
+```{r, eval=TRUE, echo = TRUE}
+?head
+```
+
+Alternatively, you can google "R function head manual" and you will likely find the information you need.
+
+## Obligatory penguins image
+
+Here are penguins
+
+```{r, eval=TRUE, echo=FALSE, out.width="80%"}
+knitr::include_graphics("figures/penguins1.jpg")
+```
+
+## Importing data
+
+Vectors and other objects can be imported from existing files
+
+```{r, eval=TRUE, echo = TRUE}
+penguins_from_file <- readLines("penguins.txt")
+head(penguins_from_file)
+```
+
+```{r, eval=TRUE, echo = FALSE}
+knitr::include_graphics("figures/penguins3.jpg")
+```
+
+## We can do the same with dataframes
+
+```{r, eval=TRUE, echo = TRUE}
+penguins_data <- read.csv("penguins.csv")
+dim(penguins_data)
+head(penguins_data)
+```
+
+
+## The library command
+
+It is used to load packages, which contain data or functions.
+
+```{r, eval=TRUE, echo = TRUE}
+library(palmerpenguins)
+
+head(penguins)
+```
+
+The packages must already be installed on your computer
+
+```{r, eval=FALSE, echo = TRUE}
+install.packages("newpackage")
+
+library(newpackage)
+
+```
+
+## Install the following packages if you do not have them
+
+```{r, eval=FALSE, echo=TRUE}
+install.packages(tidyverse,
+readxl,
+writexl,
+ggthemes,
+broom,
+palmerpenguins)
+```
+
+## Library() usually loads new functions
+
+The most common use of "library()" is to load new functions.
+
+For example, we will load two packages to import and export excel documents.
+
+```{r, eval=TRUE, echo=TRUE}
+library("readxl")
+data <- read_excel("example_table.xlsx", sheet="Sheet1")
+head(data)
+library("writexl")
+write_xlsx(data, "Sheet1_example_table.xlsx")
+```
+
+## Import and export tables with tidyverse
+
+::: {style="font-size: 50%;"}
+Tidyverse import and export functions are quicker and, in my opinion, less prone to errors than base R ones
+:::
+
+```{r, eval=TRUE, echo=TRUE}
+library(tidyverse)
+penguins_data <- read_csv("penguins.csv")
+head(penguins_data)
+write_tsv(penguins_data, "penguins.tsv")
+```
+
+::: {style="font-size: 50%;"}
+A tidyverse dataframe is called a tibble. The most obvious difference is that they should not have rownames.
+:::
+
+## Selecting columns with tidyverse
+
+The "select" function is a quick way to choose specific columns of our dataframe
+
+```{r, eval=TRUE, echo=TRUE}
+select(penguins, species, island)
+```
+
+## Removing columns with tidyverse
+
+It can also be used to remove columns
+
+```{r, eval=TRUE, echo=TRUE}
+select(penguins, -species, -island)
+```
+
+## Doing filtering with tidyverse
+
+So to be fair selecting a column in a dataframe is not difficult, and you do not need tidyverse to do it:
+
+```{r, eval=TRUE, echo=TRUE}
+head(penguins$species, n = 2)
+```
+
+But tidyverse has many more useful functions!
+
+```{r, eval=TRUE, echo=TRUE}
+filter(penguins, species=='Adelie')
+```
+
+## Connecting commands in R
+
+Many R and tidyverse commands are limited in scope, but you can combine them to perform complex tasks.
+
+The "%\>%" and "\|\>" operators are called "pipes", and they take the output of a command and give it to the following one.
+
+You print one of them with the shortcut "Ctrl+Shift+M"
+
+```{r, eval=TRUE, echo=TRUE}
+penguins %>% filter(species!='Adelie') %>% 
+  select(island) %>% dim()
+```
+
+## Create or modify columns with tidyverse
+
+```{r, eval=TRUE, echo=TRUE}
+penguins %>% mutate(New= bill_length_mm + 10) %>%
+  select(New) %>% head()
+```
+
+## Creating new text columns
+
+Mutate also works with text, if you combine it with the paste command:
+
+```{r, eval=TRUE, echo=TRUE}
+penguins %>% mutate(Descr= paste(species, island, 'cute', sep='_')) %>%
+  select(Descr) %>% head(n=4)
+```
+
+## Dropping NAs
+
+There are some NA value in our penguin dataset. There are several ways to deal with them:
+
+- Dropping rows that have them
+- Substituting NA values with the mean or median value of their column
+
+As I am lazy we will just drop them:
+
+```{r, eval=TRUE, echo=TRUE}
+penguins <- penguins %>%  drop_na()
+```
+
+Notice that this is the first time I really modify the penguins dataset, as before I did not use "\<-"
+
+## Grouping
+
+Sometimes you want to summarise data according to groups. Es: how many penguins per island per year
+
+```{r, eval=TRUE, echo=TRUE}
+summarised <- penguins %>%
+  group_by(island, year, sex, species) %>%
+  summarise(count = n())
+head(summarised)
+```
+
+## Grouping 2
+
+It is a very flexible command and we cannot explore all functionalities.
+
+```{r, eval=TRUE, echo=TRUE}
+penguins %>% 
+  group_by(island, year, sex, species) %>%
+  summarise(count = n(),
+            bill_length_mm = max(bill_length_mm),
+            body_mass_g = min(body_mass_g)) %>%
+head()
+```
+
+## Pivot wider
+
+Sometimes you want informations to be spread between more columns.
+
+```{r, eval=TRUE, echo=TRUE}
+wider <- summarised %>% pivot_wider(names_from=island, values_from= count)
+head(wider)
+```
+
+## Pivot longer
+
+Sometimes you instead want to reduce the number of columns
+
+```{r, eval=TRUE, echo=TRUE}
+wider %>% pivot_longer(cols = c(Biscoe, Dream, Torgersen),
+                       names_to = "island",
+                       values_to = "count",
+                       values_drop_na = TRUE)
+```
+
+## Joining
+
+It means to join two dataframes, based upon the value of a column
+
+It is most used when you have a column showing individual IDs per observation.
+
+```{r, eval=TRUE, echo=TRUE}
+df <- penguins %>% mutate(ID =row_number()) %>% select(ID, everything())
+head(df)
+```
+
+## Joining 2
+
+The two dataframes should, of course, contain different data
+
+```{r, eval=TRUE, echo=TRUE}
+df1 <- df %>% filter(year==2007) %>% select(ID, species)
+df2 <- df %>% filter(species=="Gentoo") %>% select(ID, island)
+
+df1 %>% inner_join(df2, by="ID") %>% head()
+```
+
+## Joining 3
+
+You can use left, right, full and inner join to get different datasets
+
+```{r, eval=TRUE, echo=TRUE}
+# penguins present in df1 but not necessarily in df2
+df1 %>% left_join(df2, by="ID") %>% head(n=2)
+# penguins present in df2 but not necessarily in df1
+df1 %>% right_join(df2, by="ID") %>% head(n=2)
+```
+
+## Joining 4
+
+You can use left, right, full and inner join to get different datasets
+
+```{r, eval=TRUE, echo=TRUE}
+# penguins present in both df1 and df2
+df1 %>% inner_join(df2, by="ID") %>% head(n=2)
+# penguins not necessarily present in df1 or df2
+df1 %>% full_join(df2, by="ID") %>% head(n=2)
+```
+
+## How to make new functions?
+
+In R ( and many other languages), you can make new functions by combining existing ones.
+
+```{r, eval=TRUE, echo=TRUE}
+remove_na_and_show <- function(df, x) {
+  # Remove rows with NA values
+  cleaned_df <- drop_na(df)
+  
+  # Show the first x rows
+  head(cleaned_df, x)
+}
+
+remove_na_and_show(penguins, 2)
+```
+
+## Small tip on using AI to solve problems 1
+
+AIs are very powerful tools, but they can also give wrong results if you are having an unusual problem or **if you express it in an unusual way**.
+
+To make sure the AI understands what you want, try to define your problem, give examples, and explain carefully what you want.
+
+For example, "I want to get the highest value in column body_mass" is not a good question, as the AI will not know which coding language you are using and how the data is organised.
+
+## Small tip on using AI to solve problems 2
+
+If you can attach your dataframe, or a subsection of it, to the chat with the LLM, and you specify which coding language it has to use, as well as the objective of the analysis, you will normally have good results.
+
+However, LLMs can give wrong answers if your question is very specific (ex: specific option of specific package). In that case it is better to check directly the manual of the package.
+
+## Example of good question:
+
+I have an R dataframe, and I want to extract the row with the highest value in column "flipper_length_mm", among the rows that have "male" as value in the " sex" column. Use tidyverse commands if possible.
+
+## Never use code you do not understand!
+
+Always look up the manual of the functions that AI suggests, unless you really understand the answer.
+
+You can also ask the AI to explain what the code does, piece by piece. It is sufficient to ask "can you explain what the previous code does, one command at a time?"
+
+Remember: you are ultimately responsible for whatever you run!
+
+## Exercises:
+
+- How much does the heaviest penguin weight? Which species is it and what island does it come from?
+- How many penguins are females?
+- How many penguins of the Gentoo species are males?
+- Which penguin species is most frequent on the Biscoe island?
+- Group the penguins according to island, sex and species. Show the number of penguins for each combination of these traits.
+
+## More exercises:
+
+- Using the grouped summary, use pivot_wider to expand the species column in three columns. Export the resulting tibble to a file in any format.
+- Import the tibble you just exported, and use pivot_longer obtain again a single column with all the species information.
+- From the penguins_raw dataset, extract a 2 column tibble with Individual IDs and Island. Keep only individuals from the Dream island and then left_join this dataset with penguins_raw. What happens to the Island column when you do this?
+
+
+## In case of problems remember to:
+
+- Download this presentation and reread the slides from here: https://github.com/UPSCb/Intro_to_R
+- Google error messages
+- Use AI models (carefully, try to understand everything the AI model is telling you)
+- Ask the teachers
+- Use the cheatsheet (https://rstudio.github.io/cheatsheets/html/data-transformation.html)
+
+```{r, eval=TRUE, echo=FALSE, out.width="60%"}
+knitr::include_graphics("figures/penguins4.jpg")
+```
+
+# Plotting
+
+```{r, eval=TRUE, echo=FALSE, out.width="60%"}
+knitr::include_graphics("figures/plotting.jpg")
+```
+
+## Basics of ggplot2
+
+This package is very flexible, and allows you to build a plot "step by step".
+
+In most cases you start with ggplot() and supply a dataset and aesthetic mapping (with aes()). You then add on layers (like geom_point() or geom_histogram()), scales (like scale_colour_brewer()), faceting specifications (like facet_wrap()) and/or coordinate systems (like coord_flip()).
+
+I load the additional package "ggthemes" to have more color options
+
+```{r, eval=TRUE, echo=TRUE}
+library(ggthemes)
+```
+
+## The very beginning
+
+```{r, eval=TRUE, echo=TRUE}
+ggplot(data = penguins)
+```
+
+## Setting axis
+
+```{r, eval=TRUE, echo=TRUE}
+ggplot(  data = penguins,
+         mapping = aes(x = flipper_length_mm, y = body_mass_g))
+```
+
+## Adding data
+
+```{r, eval=TRUE, echo=TRUE}
+ggplot(  data = penguins, 
+        mapping = aes(x = flipper_length_mm, y = body_mass_g)) + 
+  geom_point()
+```
+
+## Coloring by species
+
+```{r, eval=TRUE, echo=TRUE}
+ggplot(  data = penguins, 
+        mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species)) + 
+  geom_point()
+```
+
+## Adding local lm lines
+
+```{r, eval=FALSE, echo=TRUE}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species)
+) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Adding local lm lines
+
+```{r, eval=TRUE, echo=FALSE}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species)
+) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Adding global lm line
+
+```{r, eval=FALSE, echo=TRUE}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth(method = "lm")
+```
+
+## Adding global lm line
+
+```{r, eval=TRUE, echo=FALSE, fig.height=4}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth(method = "lm")
+```
+
+## Change colors and add title and subtitle
+
+```{r, eval=FALSE, echo=TRUE}
+
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Body mass and flipper length",
+    subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+    x = "Flipper length (mm)", y = "Body mass (g)",
+    color = "Species", shape = "Species"
+  ) +
+  scale_color_colorblind()
+```
+
+## Change colors and add title and subtitle
+
+```{r, eval=TRUE, echo=FALSE, fig.height=4}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Body mass and flipper length",
+    subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+    x = "Flipper length (mm)", y = "Body mass (g)",
+    color = "Species", shape = "Species"
+  ) +
+  scale_color_colorblind()
+```
+
+## Add facets
+
+```{r, eval=FALSE, echo=TRUE}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(island)) +
+  labs(
+    title = "Body mass and flipper length",
+    subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+    x = "Flipper length (mm)", y = "Body mass (g)",
+    color = "Species", shape = "Species"
+  ) +
+  scale_color_colorblind()
+```
+
+## Add facets
+
+```{r, eval=TRUE, echo=FALSE, fig.height=4}
+
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  facet_wrap(vars(island)) +
+  labs(
+    title = "Body mass and flipper length",
+    subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+    x = "Flipper length (mm)", y = "Body mass (g)",
+    color = "Species", shape = "Species"
+  ) +
+  scale_color_colorblind()
+```
+
+## Data and mapping are the first two arguments by default
+
+```{r, eval=FALSE, echo=TRUE}
+
+ggplot(
+  penguins,
+  aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(aes(color = species, shape = species)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Body mass and flipper length",
+    subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+    x = "Flipper length (mm)", y = "Body mass (g)",
+    color = "Species", shape = "Species"
+  ) +
+  scale_color_colorblind()
+```
+
+## A little about visualizing categorical variables
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+
+ggplot(penguins, aes(x = species)) +
+  geom_bar()
+```
+
+## Ordering columns by number of elements
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+
+ggplot(penguins, aes(x = fct_infreq(species))) +
+  geom_bar()
+```
+
+## Bindwidths can be assigned to numerical variables to visualize them as histograms
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 200)
+  
+```
+
+## You can save plots with ggsave
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+
+p <- ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 200)
+  
+ggsave("Figures/amazing_inspired_beautiful_plot.svg",
+       plot = p,
+       device = "svg")
+
+```
+
+# Principal component analysis (PCA)
+
+## Principal component analysis (PCA)
+
+<p style="font-size: 18px;">
+
+It is a linear dimensionality reduction technique.
+
+</p>
+
+<p style="font-size: 18px;">
+
+This means that it aims to reduce the number of dimensions that describe the dataset while retaining as much information as possible.
+
+</p>
+
+<p style="font-size: 18px;">
+
+For example, the flipper length of penguins kind of correlate with their body mass:
+
+</p>
+
+```{r, eval=TRUE, echo=FALSE, fig.height=3}
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth(method = "lm")
+```
+
+## Using PCA to reduce dimensions
+
+We can use a PCA to define principal components, which are single values that retain information about multiple dimensions, such as flipper length and body mass.
+
+In practice, before doing PCA you must:
+
+- remove any NA values
+- select numerical columns and/or turn categorical columns to factors
+- center and scale all numerical columns
+```{r, eval=TRUE, echo=TRUE}
+penguins <- penguins %>% drop_na()
+penguins_numeric <- select_if(penguins, is.numeric)
+pca_result <- prcomp(penguins_numeric, center=TRUE, scale. = TRUE)
+```
+
+## Let's take a look at the results
+
+Each of the original numeric colums correlates and contributes to each of the PC by different amounts.
+
+```{r, eval=TRUE, echo=TRUE}
+pca_result 
+
+```
+
+## We can visualize it like this
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+pca_df <- as.data.frame(pca_result$rotation)
+pca_df <- pca_df %>% mutate(variable=rownames(pca_df))
+pca_tidy <- pivot_longer(pca_df, cols = -variable, names_to = "PC",
+                         values_to = "Loading")
+ggplot(pca_tidy, aes(x = PC, y = Loading, fill = variable)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black")
+
+```
+
+## Each PC explains a certain amount of variability
+
+```{r, eval=TRUE, echo=TRUE}
+summary(pca_result)
+```
+
+## Let's look at this with ggplot
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+library(broom)
+Variance <- as_tibble(summary(pca_result)$importance)[3,]
+Variance <- Variance %>%
+  pivot_longer(everything(), names_to = "PC", values_to = "cumulative_variance")
+ggplot(Variance, aes(x = PC, y = cumulative_variance)) +
+  geom_col(fill = "skyblue", color = "black")
+```
+
+## We can use scatterplots and PCA to explore our data
+
+Prepare data
+
+```{r, eval=TRUE, echo=TRUE, fig.height=3}
+pc.dat <- bind_cols(PC1=pca_result$x[,1],
+                    PC2=pca_result$x[,2],
+                    PC3=pca_result$x[,3],
+                    PC4=pca_result$x[,4],
+                    PC5=pca_result$x[,5],
+                    penguins)
+
+colnames(pc.dat)
+```
+
+## Run scatterplot
+
+```{r, eval=TRUE, echo=TRUE, fig.height=4}
+ggplot(pc.dat, aes(x=PC1, y=PC2, col=species, shape=sex)) + 
+  geom_point(size=2) + 
+  ggtitle("Principal Component Analysis", subtitle="PC1 * PC2") + theme_minimal()
+```
+
+## Run scatterplot
+
+```{r, eval=TRUE, echo=TRUE, fig.height=4}
+ggplot(pc.dat, aes(x=PC1, y=PC3, col=species, shape=sex)) + 
+  geom_point(size=2) + 
+  ggtitle("Principal Component Analysis", subtitle="PC1 * PC3") + theme_minimal()
+```
+
+# Simple statistics
+
+## t test
+
+Is the difference in weight between Gentoo and Chinstrap penguins significant?
+
+```{r, eval=TRUE, echo=TRUE}
+gentoo <- penguins %>% filter(species=="Gentoo") %>% select(body_mass_g) %>% pull()
+chinstrap <- penguins %>% filter(species=="Chinstrap") %>% select(body_mass_g) %>% pull()
+
+t.test(gentoo, chinstrap,conf.level = 0.95)
+```
+
+## Fisher test
+
+Are Adelie penguins overrepresented on the Biscoe island?
+
+```{r, eval=TRUE, echo=TRUE}
+adelie_biscoe <- penguins %>% filter(species=="Adelie" & island=="Biscoe") %>% 
+  rownames() %>% length()
+
+others_biscoe <- penguins %>% filter(species!="Adelie" & island=="Biscoe") %>% 
+  rownames() %>% length()
+
+adelie_other <- penguins %>% filter(species=="Adelie" & island!="Biscoe") %>% 
+  rownames() %>% length()
+
+others_other <- penguins %>% filter(species!="Adelie" & island!="Biscoe") %>% 
+  rownames() %>% length()
+
+```
+
+## Fisher test
+
+Are Adelie penguins overrepresented on the Biscoe island?
+
+```{r, eval=TRUE, echo=TRUE}
+data <- tibble(Adelie= c(adelie_biscoe, adelie_other),
+               Others = c(others_biscoe, others_other)) %>% 
+  as.matrix()
+rownames(data) <- c("Biscoe", "Other")
+data
+```
+
+## Fisher test
+
+Are Adelie penguins overrepresented on the Biscoe island?
+
+```{r, eval=TRUE, echo=TRUE}
+fisher.test(data, alternative="greater")
+```
+
+# For loops
+
+## For loops
+
+They are a way to repeat the same operation many times, iterating over the values of a vector.
+
+They are not efficient in R, so if you have hundreds or thousands of elements you should look into the purrr package and learn concepts of functional programming (https://purrr.tidyverse.org/).
+
+## For loops
+
+```{r, eval=FALSE, echo=TRUE}
+penguin_species <- penguins %>% select(species) %>% pull() %>% unique()
+for (sp in penguin_species) {
+  other_species <- penguins %>% select(species) %>% filter(!species==sp) %>% pull() %>% unique()
+  sp2 <- other_species[1]
+  sp3 <- other_species[2]
+  
+  data1 <- penguins %>% filter(species==sp) %>% select(body_mass_g) %>% pull()
+  data2 <- penguins %>% filter(species==sp2) %>% select(body_mass_g) %>% pull()
+  data3 <- penguins %>% filter(species==sp3) %>% select(body_mass_g) %>% pull()
+  
+  print(paste0(sp, " vs ", sp2))
+  t.test(data1, data2,conf.level = 0.95) %>% print()
+  print(paste0(sp, " vs ", sp3))
+  t.test(data1, data3,conf.level = 0.95) %>% print()
+  
+}
+
+```
+
+## For loops
+
+```{r, eval=TRUE, echo=FALSE}
+penguin_species <- penguins %>% select(species) %>% pull() %>% unique()
+for (sp in penguin_species) {
+  other_species <- penguins %>% select(species) %>% filter(!species==sp) %>% pull() %>% unique()
+  sp2 <- other_species[1]
+  sp3 <- other_species[2]
+  
+  data1 <- penguins %>% filter(species==sp) %>% select(body_mass_g) %>% pull()
+  data2 <- penguins %>% filter(species==sp2) %>% select(body_mass_g) %>% pull()
+  data3 <- penguins %>% filter(species==sp3) %>% select(body_mass_g) %>% pull()
+  
+  print(paste0(sp, " vs ", sp2))
+  t.test(data1, data2,conf.level = 0.95) %>% print()
+  print(paste0(sp, " vs ", sp3))
+  t.test(data1, data3,conf.level = 0.95) %>% print()
+  
+}
+
+```
+
+## Nested for loops
+
+```{r, eval=FALSE, echo=TRUE}
+penguin_species <- penguins %>% select(species) %>% pull() %>% unique()
+for (sp in penguin_species) {
+  other_species <- penguins %>% select(species) %>% filter(!species==sp) %>% pull() %>% unique()
+  for (sp2 in other_species) {
+    data1 <- penguins %>% filter(species==sp) %>% select(body_mass_g) %>% pull()
+    data2 <- penguins %>% filter(species==sp2) %>% select(body_mass_g) %>% pull()
+    print(paste0(sp, " vs ", sp2))
+    t.test(data1, data2,conf.level = 0.95) %>% print()
+  }
+}
+
+```
+
+Remember to adjust the pvalue if you run many tests.
+
+## Exercises
+
+- Try to rerun the previous code step by step, observe the obtained R objects and understand what we did.
+- Work on your own dataset
+- Run the following and follow the tutorial
+
+```{r, eval=FALSE, echo=TRUE}
+pak::pkg_install("UPSCb/Tutorial_01_data_science_intro")
+learnr::run_tutorial("01_data_science_intro", package = "RnaSeqTutorial01")
+```
+
+## Interesting links
+
+- Making interactive plots and apps with R (https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/)
+- Making presentations with quarto (https://quarto.org/docs/presentations/)
+- Mixing R and python with reticulate (https://rstudio.github.io/reticulate/)
+- Passing arguments to R scripts (https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/)
